@@ -1,0 +1,49 @@
+{
+  "name": "swissqrbill-microservice",
+  "version": "0.1.0",
+  "private": false,
+  "description": "Self-hostable Swiss QR Bill microservice with HTTP API and HTML form, powered by schoero/swissqrbill.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=25 <26"
+  },
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc -p tsconfig.json",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "start": "node dist/server.js",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "keywords": [
+    "swiss-qr-bill",
+    "qr-bill",
+    "microservice",
+    "fastify",
+    "typescript",
+    "pdf",
+    "svg"
+  ],
+  "dependencies": {
+    "@fastify/formbody": "8.0.2",
+    "@fastify/rate-limit": "10.3.0",
+    "@fastify/static": "9.0.0",
+    "fastify": "5.8.4",
+    "pdfkit": "0.18.0",
+    "swissqrbill": "4.3.0",
+    "zod": "4.3.6"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@types/node": "25.5.0",
+    "@types/pdfkit": "0.17.5",
+    "eslint": "10.1.0",
+    "globals": "17.4.0",
+    "tsx": "4.21.0",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.57.2",
+    "vitest": "4.1.2"
+  }
+}

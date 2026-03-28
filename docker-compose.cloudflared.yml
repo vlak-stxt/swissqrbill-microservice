@@ -1,0 +1,49 @@
+services:
+  qrbill:
+    container_name: qr-ua-in-app
+    build:
+      context: .
+    env_file:
+      - .env
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:3000/health').then((r)=>{if(!r.ok)process.exit(1);process.exit(0)}).catch(()=>process.exit(1))",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    networks:
+      - qr-ua-in-net
+
+  cloudflared:
+    container_name: qr-ua-in-tunnel
+    image: cloudflare/cloudflared:2026.3.0
+    command: tunnel --no-autoupdate run
+    depends_on:
+      qrbill:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      TUNNEL_TOKEN: ${TUNNEL_TOKEN}
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    networks:
+      - qr-ua-in-net
+
+networks:
+  qr-ua-in-net:
+    name: qr-ua-in-net

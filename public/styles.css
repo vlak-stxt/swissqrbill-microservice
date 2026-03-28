@@ -1,0 +1,269 @@
+:root {
+  --bg: #f4efe7;
+  --ink: #101820;
+  --muted: #52606d;
+  --panel: rgba(255, 252, 247, 0.85);
+  --panel-border: rgba(16, 24, 32, 0.08);
+  --accent: #d85d2a;
+  --accent-soft: #ffe2d4;
+  --shadow: 0 24px 60px rgba(16, 24, 32, 0.12);
+  --radius: 22px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Avenir Next", "Trebuchet MS", sans-serif;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at top left, rgba(216, 93, 42, 0.2), transparent 30%),
+    radial-gradient(circle at top right, rgba(26, 115, 232, 0.14), transparent 22%),
+    linear-gradient(180deg, #fffaf3 0%, var(--bg) 100%);
+}
+
+.shell {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 48px 0 64px;
+}
+
+.hero {
+  padding: 24px 6px 32px;
+}
+
+.eyebrow {
+  margin: 0 0 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.hero h1,
+.panel h2 {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  line-height: 1.05;
+}
+
+.hero h1 {
+  max-width: 11ch;
+  font-size: clamp(2.8rem, 7vw, 5.3rem);
+}
+
+.lead,
+.panel p,
+.meta-note,
+small {
+  color: var(--muted);
+}
+
+.lead {
+  max-width: 60ch;
+  font-size: 1.06rem;
+  line-height: 1.65;
+}
+
+.panel {
+  backdrop-filter: blur(12px);
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 24px;
+}
+
+.panel + .panel,
+.panel + .results,
+.results {
+  margin-top: 22px;
+}
+
+.panel-head,
+.actions,
+.results {
+  display: flex;
+  gap: 16px;
+}
+
+.panel-head {
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.actions {
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.field,
+.field-wide {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.field-wide {
+  grid-column: 1 / -1;
+}
+
+.field span {
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+input,
+textarea {
+  width: 100%;
+  border: 1px solid rgba(16, 24, 32, 0.12);
+  border-radius: 16px;
+  padding: 14px 15px;
+  font: inherit;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.78);
+}
+
+input:focus,
+textarea:focus {
+  outline: 2px solid rgba(216, 93, 42, 0.25);
+  border-color: rgba(216, 93, 42, 0.5);
+}
+
+.form-footer {
+  grid-column: 1 / -1;
+  padding-top: 8px;
+}
+
+.button,
+button.button {
+  appearance: none;
+  border: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 0 18px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: #fff;
+  text-decoration: none;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 140ms ease, opacity 140ms ease, background 140ms ease;
+}
+
+.button:hover,
+button.button:hover {
+  transform: translateY(-1px);
+}
+
+.button-ghost {
+  background: var(--accent-soft);
+  color: var(--ink);
+}
+
+.results {
+  align-items: flex-start;
+}
+
+.preview-panel {
+  flex: 1.4;
+}
+
+.summary-panel {
+  flex: 0.8;
+}
+
+.preview-canvas {
+  overflow: auto;
+  border-radius: 18px;
+  padding: 20px;
+  background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+}
+
+.preview-canvas svg {
+  width: 100%;
+  height: auto;
+  min-width: 620px;
+}
+
+.summary-list {
+  margin: 0;
+}
+
+.summary-list div {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(16, 24, 32, 0.08);
+}
+
+.summary-list dt {
+  font-weight: 700;
+}
+
+.summary-list dd {
+  margin: 0;
+}
+
+.alert {
+  margin-bottom: 18px;
+  padding: 16px 18px;
+  border-radius: 18px;
+  background: #fff1e8;
+  border: 1px solid rgba(216, 93, 42, 0.25);
+}
+
+.alert ul {
+  margin: 10px 0 0;
+  padding-left: 18px;
+}
+
+code {
+  font-family: "SF Mono", "Menlo", monospace;
+}
+
+@media (max-width: 900px) {
+  .results,
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .panel-head {
+    flex-direction: column;
+  }
+
+  .preview-canvas svg {
+    min-width: 520px;
+  }
+}
+
+@media (max-width: 640px) {
+  .shell {
+    width: min(100% - 20px, 100%);
+    padding-top: 28px;
+  }
+
+  .panel,
+  .preview-canvas {
+    padding: 18px;
+  }
+
+  .preview-canvas svg {
+    min-width: 440px;
+  }
+}
