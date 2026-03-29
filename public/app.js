@@ -4,7 +4,10 @@ document.addEventListener("change", (event) => {
     : null;
 
   if (select) {
-    window.location.href = select.value;
+    const url = select.value;
+    if (url.startsWith("/")) {
+      window.location.href = url;
+    }
   }
 });
 
