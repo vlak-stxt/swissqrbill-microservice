@@ -58,3 +58,23 @@ document.addEventListener("click", async (event) => {
     }
   }
 });
+
+document.addEventListener("change", (event) => {
+  const target = event.target;
+
+  if (target instanceof HTMLSelectElement && target.hasAttribute("data-lang-select")) {
+    window.location.href = target.value;
+    return;
+  }
+
+  if (target instanceof HTMLInputElement && target.hasAttribute("data-debtor-toggle")) {
+    const form = target.form;
+    const fields = form?.querySelector("[data-debtor-fields]");
+
+    if (!(fields instanceof HTMLElement)) {
+      return;
+    }
+
+    fields.classList.toggle("is-visible", target.checked);
+  }
+});

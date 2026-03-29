@@ -5,6 +5,12 @@ export const validPaymentInput: PaymentInput = {
   city: "Zurich",
   country: "CH",
   currency: "CHF",
+  debtorCity: "Adliswil",
+  debtorCountry: "CH",
+  debtorName: "Example Customer GmbH",
+  debtorNumber: "67",
+  debtorPostcode: "8134",
+  debtorStreet: "Customer Street",
   iban: "CH5604835012345678009",
   message: "Invoice 10024",
   name: "Example Tools AG",
@@ -15,4 +21,4 @@ export const validPaymentInput: PaymentInput = {
 };
 
 export const validPaymentQuery =
-  "/api/qr?name=Example%20Tools%20AG&street=Example%20Street&number=12A&postcode=8000&city=Zurich&iban=CH5604835012345678009&amount=149.95&message=Invoice%2010024&personalNote=Demo%20payload";
+  "/api/qr?name=Example%20Tools%20AG&street=Example%20Street&number=12A&postcode=8000&city=Zurich&debtorName=Example%20Customer%20GmbH&debtorStreet=Customer%20Street&debtorNumber=67&debtorPostcode=8134&debtorCity=Adliswil&debtorCountry=CH&iban=CH5604835012345678009&amount=149.95&message=Invoice%2010024&personalNote=Demo%20payload";
