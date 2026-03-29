@@ -208,6 +208,10 @@ function formSection(title: string): string {
   return `<div class="form-section">${escapeHtml(title)}</div>`;
 }
 
+function formDivider(): string {
+  return `<div class="form-divider" aria-hidden="true"></div>`;
+}
+
 export function renderHomePage(model: HomePageModel): string {
   const errors = model.errors ?? [];
   const hasResult = model.svgMarkup !== undefined;
@@ -305,9 +309,16 @@ export function renderHomePage(model: HomePageModel): string {
             hint: copy.hintReference
           })}
           ${textArea("message", copy.fieldMessage, model.formValues.message)}
+          ${field("address", copy.fieldAdditionalAddress, model.formValues.address, {
+            hint: copy.hintAddress
+          })}
+          ${textArea("personalNote", copy.fieldPersonalNote, model.formValues.personalNote, copy.hintPersonalNote)}
+          ${field("country", copy.fieldCountry, model.formValues.country ?? "CH")}
+          ${formDivider()}
           <div class="toggle-row">
-            <label class="toggle">
+            <label class="toggle-switch">
               <input type="checkbox" name="debtorEnabled" value="1" data-debtor-toggle ${debtorExpanded ? "checked" : ""} />
+              <span class="toggle-switch-ui" aria-hidden="true"></span>
               <span>${escapeHtml(copy.actionTogglePayableBy)}</span>
             </label>
           </div>
@@ -322,11 +333,6 @@ export function renderHomePage(model: HomePageModel): string {
               placeholder: "CH"
             })}
           </div>
-          ${field("address", copy.fieldAdditionalAddress, model.formValues.address, {
-            hint: copy.hintAddress
-          })}
-          ${textArea("personalNote", copy.fieldPersonalNote, model.formValues.personalNote, copy.hintPersonalNote)}
-          ${field("country", copy.fieldCountry, model.formValues.country ?? "CH")}
 
           <div class="form-footer">
             <button class="button" type="submit">${escapeHtml(copy.actionGenerateQr)}</button>
