@@ -4,9 +4,13 @@ document.addEventListener("change", (event) => {
     : null;
 
   if (select) {
-    const url = select.value;
-    if (url.startsWith("/")) {
-      window.location.href = url;
+    try {
+      const target = new URL(select.value, window.location.origin);
+      if (target.origin === window.location.origin) {
+        window.location.href = target.href;
+      }
+    } catch {
+      // invalid URL, ignore
     }
   }
 });
