@@ -77,7 +77,7 @@ That makes it a good fit for a small wrapper service with low standard-complianc
 
 Requirements:
 
-- Node.js 22 LTS
+- Node.js 25 stable
 - npm
 
 Install and start:
