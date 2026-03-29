@@ -92,6 +92,10 @@ small {
   margin-top: 22px;
 }
 
+.results > .panel {
+  margin-top: 0;
+}
+
 .panel-head,
 .actions {
   display: flex;
