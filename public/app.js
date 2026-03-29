@@ -1,3 +1,20 @@
+document.addEventListener("change", (event) => {
+  const select = event.target instanceof HTMLSelectElement && event.target.dataset.langSelect !== undefined
+    ? event.target
+    : null;
+
+  if (select) {
+    try {
+      const target = new URL(select.value, window.location.origin);
+      if (target.origin === window.location.origin) {
+        window.location.href = target.href;
+      }
+    } catch {
+      // invalid URL, ignore
+    }
+  }
+});
+
 document.addEventListener("click", async (event) => {
   const button = event.target instanceof HTMLElement ? event.target.closest("[data-copy-url]") : null;
   const copyTextButton = event.target instanceof HTMLElement ? event.target.closest("[data-copy-text]") : null;

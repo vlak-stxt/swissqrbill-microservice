@@ -1,5 +1,8 @@
 # swissqrbill-microservice
 
+[![CI](https://github.com/vlak-stxt/swissqrbill-microservice/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/vlak-stxt/swissqrbill-microservice/actions/workflows/ci.yml)
+[![Security](https://github.com/vlak-stxt/swissqrbill-microservice/actions/workflows/security.yml/badge.svg?branch=main)](https://github.com/vlak-stxt/swissqrbill-microservice/actions/workflows/security.yml)
+
 Self-hostable Swiss QR Bill microservice with HTTP API and HTML form, powered by [`schoero/swissqrbill`](https://github.com/schoero/swissqrbill).
 
 ## Demo instance
@@ -7,6 +10,14 @@ Self-hostable Swiss QR Bill microservice with HTTP API and HTML form, powered by
 You can try a live instance at [qr.ua-in.ch](https://qr.ua-in.ch/).
 
 This public deployment is provided for demonstration purposes only. It should not be used for production integrations because continuous availability is not guaranteed.
+
+Example prefilled bill:
+
+[Open example](https://qr.ua-in.ch/?lang=de&name=Sample+GmbH&iban=CH93+0076+2011+6238+5295+7&street=Bahnhofstrasse&number=1&postcode=8001&city=Zurich&amount=519.67&currency=CHF&message=Order+1234567+Customer+12345&country=CH)
+
+<p>
+  <img src="./QR-BILL-example-screenshot.png" alt="Swiss QR Bill example" width="100%" />
+</p>
 
 ## Why this project exists
 
@@ -107,6 +118,7 @@ Example values are in [.env.example](/Users/vlak/swissqrbill-microservice/.env.e
 | `LOG_LEVEL` | `info` | Fastify logger level |
 | `RATE_LIMIT_MAX` | `60` | Max requests per window |
 | `RATE_LIMIT_WINDOW` | `1 minute` | Rate limit window |
+| `PUBLIC_BASE_URL` | empty | Optional canonical public base URL used for generated embed URLs |
 | `COMPOSE_PROJECT_NAME` | `qrbill` | Docker Compose project name |
 | `TUNNEL_TOKEN` | empty | Required only for dedicated Cloudflare Tunnel mode |
 
@@ -133,7 +145,7 @@ This repository ships with two Docker deployment variants:
 - [docker-compose.yml](/Users/vlak/swissqrbill-microservice/docker-compose.yml): localhost-only deployment on `127.0.0.1:3000`
 - [docker-compose.cloudflared.yml](/Users/vlak/swissqrbill-microservice/docker-compose.cloudflared.yml): dedicated Cloudflare Tunnel deployment
 
-See [DEPLOY.md](/Users/vlak/swissqrbill-microservice/DEPLOY.md) for the full `/opt/qr.ua-in` rollout flow.
+See [DEPLOY.md](/Users/vlak/swissqrbill-microservice/DEPLOY.md) for a sample rollout layout and deployment flow.
 
 ## API usage
 
@@ -230,6 +242,26 @@ Covered scenarios:
 - successful SVG generation
 - successful PDF generation
 - integration tests for `GET /api/qr` and `POST /api/qr`
+- UI embed URLs derived from proxy headers or `PUBLIC_BASE_URL`
+- static assets served with cache headers
+
+## CI and security
+
+GitHub Actions cover:
+
+- `npm run lint`
+- `npm test`
+- `npm run build`
+- Docker image build validation
+- `npm audit --omit=dev`
+- CodeQL analysis for JavaScript/TypeScript
+- Trivy filesystem scan for high/critical findings
+
+Dependabot is configured for:
+
+- npm dependencies
+- Docker base images
+- GitHub Actions
 
 ## Health endpoint
 

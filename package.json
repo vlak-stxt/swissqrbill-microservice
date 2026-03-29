@@ -13,9 +13,11 @@
     "build": "tsc -p tsconfig.json",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
+    "prepare": "git config core.hooksPath .githooks || true",
     "start": "node dist/server.js",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
   },
   "keywords": [
     "swiss-qr-bill",
@@ -44,6 +46,7 @@
     "tsx": "4.21.0",
     "typescript": "5.9.3",
     "typescript-eslint": "8.57.2",
+    "@vitest/coverage-v8": "4.1.2",
     "vitest": "4.1.2"
   }
 }

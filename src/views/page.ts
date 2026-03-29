@@ -50,6 +50,7 @@ interface HomePageModel {
   language: UiLanguage;
   links?: RenderedBillLinks;
   metadataNote?: string;
+  publicBaseUrl?: string;
   resetLink: string;
   switchLinks: Record<UiLanguage, string>;
   svgMarkup?: string;
@@ -183,8 +184,9 @@ export function renderHomePage(model: HomePageModel): string {
   const errors = model.errors ?? [];
   const hasResult = model.svgMarkup !== undefined;
   const copy = copyByLanguage[model.language];
-  const svgAbsoluteUrl = model.links ? new URL(model.links.embedSvgUrl, "https://qr.ua-in.ch").toString() : "";
-  const websiteEmbedCode = `<img src="${svgAbsoluteUrl}" alt="Swiss QR Bill" loading="lazy" />`;
+  const svgAbsoluteUrl =
+    model.links && model.publicBaseUrl ? new URL(model.links.embedSvgUrl, model.publicBaseUrl).toString() : "";
+  const websiteEmbedCode = `<img src="${svgAbsoluteUrl}" alt="Swiss QR Bill" />`;
 
   return `<!doctype html>
 <html lang="${escapeHtml(model.language)}">
@@ -192,6 +194,8 @@ export function renderHomePage(model: HomePageModel): string {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Swiss QR Bill Microservice</title>
+    <link rel="icon" href="/public/favicon.ico?v=${escapeHtml(model.assetVersion)}" sizes="any" />
+    <link rel="icon" type="image/png" href="/public/qrbill-favicon.png?v=${escapeHtml(model.assetVersion)}" />
     <link rel="stylesheet" href="/public/styles.css?v=${escapeHtml(model.assetVersion)}" />
     <script defer src="/public/app.js?v=${escapeHtml(model.assetVersion)}"></script>
   </head>
@@ -201,7 +205,7 @@ export function renderHomePage(model: HomePageModel): string {
         <div class="hero-top">
           <p class="eyebrow">${escapeHtml(copy.eyebrow)}</p>
           <label class="lang-switch" aria-label="${escapeHtml(copy.actionLanguage)}">
-            <select onchange="window.location.href=this.value">
+            <select data-lang-select>
               <option value="${escapeHtml(model.switchLinks.en)}" ${model.language === "en" ? "selected" : ""}>English</option>
               <option value="${escapeHtml(model.switchLinks.de)}" ${model.language === "de" ? "selected" : ""}>Deutsch</option>
             </select>
@@ -282,7 +286,7 @@ export function renderHomePage(model: HomePageModel): string {
                 <div class="panel-head">
                   <div>
                     <h2>${escapeHtml(copy.headingPreview)}</h2>
-                    <p>${escapeHtml(copy.previewLead).replaceAll("`", "<code>").replace("</code>swissqrbill<code>", "swissqrbill").replaceAll("<code>", "<code>").replaceAll("</code>", "</code>")}</p>
+                    <p>${escapeHtml(copy.previewLead).replace(/`([^`]+)`/g, (_, t: string) => `<code>${t}</code>`)}</p>
                   </div>
                   <div class="actions">
                     <a class="button" href="${escapeHtml(model.links?.pdfUrl)}">${escapeHtml(copy.actionDownloadPdf)}</a>
