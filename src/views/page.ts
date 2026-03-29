@@ -186,7 +186,7 @@ export function renderHomePage(model: HomePageModel): string {
   const copy = copyByLanguage[model.language];
   const svgAbsoluteUrl =
     model.links && model.publicBaseUrl ? new URL(model.links.embedSvgUrl, model.publicBaseUrl).toString() : "";
-  const websiteEmbedCode = `<img src="${svgAbsoluteUrl}" alt="Swiss QR Bill" loading="lazy" />`;
+  const websiteEmbedCode = `<img src="${svgAbsoluteUrl}" alt="Swiss QR Bill" />`;
 
   return `<!doctype html>
 <html lang="${escapeHtml(model.language)}">
@@ -203,7 +203,7 @@ export function renderHomePage(model: HomePageModel): string {
         <div class="hero-top">
           <p class="eyebrow">${escapeHtml(copy.eyebrow)}</p>
           <label class="lang-switch" aria-label="${escapeHtml(copy.actionLanguage)}">
-            <select onchange="window.location.href=this.value">
+            <select data-lang-select>
               <option value="${escapeHtml(model.switchLinks.en)}" ${model.language === "en" ? "selected" : ""}>English</option>
               <option value="${escapeHtml(model.switchLinks.de)}" ${model.language === "de" ? "selected" : ""}>Deutsch</option>
             </select>
