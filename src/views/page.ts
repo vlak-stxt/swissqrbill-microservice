@@ -74,8 +74,8 @@ const copyByLanguage: Record<UiLanguage, Copy> = {
     actionDownloadSvg: "SVG herunterladen",
     actionGenerateQr: "QR generieren",
     actionResetForm: "Formular zurücksetzen",
-    actionTogglePayableBy: "Zahlenden hinzufügen",
-    sectionPayableBy: "Zahlbar durch",
+    actionTogglePayableBy: "Angaben zum Zahlenden hinzufügen",
+    sectionPayableBy: "Angaben zum Zahlenden",
     embedWebsiteLead: "Direkte Einbindung auf einer Website per externem SVG.",
     embedWebsiteTitle: "Einbettung auf Websites",
     eyebrow: "Open Source • Fastify • TypeScript",
@@ -87,12 +87,12 @@ const copyByLanguage: Record<UiLanguage, Copy> = {
     fieldIban: "IBAN",
     fieldMessage: "Mitteilung an Empfänger",
     fieldName: "Name des Zahlungsempfängers",
-    fieldPayableByCity: "Ort des Zahlenden",
-    fieldPayableByCountry: "Land des Zahlenden",
-    fieldPayableByName: "Name des Zahlenden",
-    fieldPayableByNumber: "Nummer des Zahlenden",
-    fieldPayableByPostcode: "PLZ des Zahlenden",
-    fieldPayableByStreet: "Strasse des Zahlenden",
+    fieldPayableByCity: "Ort",
+    fieldPayableByCountry: "Land",
+    fieldPayableByName: "Name",
+    fieldPayableByNumber: "Nr.",
+    fieldPayableByPostcode: "PLZ",
+    fieldPayableByStreet: "Strasse",
     fieldNumber: "Nummer",
     fieldPersonalNote: "Persönliche Notiz",
     fieldPostcode: "PLZ",
@@ -121,8 +121,8 @@ const copyByLanguage: Record<UiLanguage, Copy> = {
     actionDownloadSvg: "Download SVG",
     actionGenerateQr: "Generate QR",
     actionResetForm: "Reset form",
-    actionTogglePayableBy: "Add payable by",
-    sectionPayableBy: "Payable by",
+    actionTogglePayableBy: "Add payer details",
+    sectionPayableBy: "Payer details",
     embedWebsiteLead: "Direct website embed using the external SVG endpoint.",
     embedWebsiteTitle: "Website embed",
     eyebrow: "Open-source • Fastify • TypeScript",
@@ -134,12 +134,12 @@ const copyByLanguage: Record<UiLanguage, Copy> = {
     fieldIban: "IBAN",
     fieldMessage: "Message for payee",
     fieldName: "Payee Name",
-    fieldPayableByCity: "Payable by city",
-    fieldPayableByCountry: "Payable by country",
-    fieldPayableByName: "Payable by name",
-    fieldPayableByNumber: "Payable by number",
-    fieldPayableByPostcode: "Payable by postcode",
-    fieldPayableByStreet: "Payable by street",
+    fieldPayableByCity: "City",
+    fieldPayableByCountry: "Country",
+    fieldPayableByName: "Name",
+    fieldPayableByNumber: "No.",
+    fieldPayableByPostcode: "Postcode",
+    fieldPayableByStreet: "Street",
     fieldNumber: "Number",
     fieldPersonalNote: "Personal note",
     fieldPostcode: "Postcode",
@@ -167,6 +167,7 @@ function field(
   label: string,
   value: string | undefined,
   options?: {
+    className?: string;
     hint?: string;
     inputMode?: "decimal" | "numeric" | "text";
     min?: string;
@@ -176,9 +177,10 @@ function field(
   }
 ): string {
   const type = options?.type ?? "text";
+  const className = options?.className ? `field ${options.className}` : "field";
 
   return `
-    <label class="field">
+    <label class="${escapeHtml(className)}">
       <span>${escapeHtml(label)}</span>
       <input
         name="${escapeHtml(name)}"
@@ -324,7 +326,10 @@ export function renderHomePage(model: HomePageModel): string {
           </div>
           <div class="debtor-fields ${debtorExpanded ? "is-visible" : ""}" data-debtor-fields ${debtorExpanded ? "" : "hidden"}>
             ${formSection(copy.sectionPayableBy)}
-            ${field("debtorName", copy.fieldPayableByName, model.formValues.debtorName, { placeholder: "" })}
+            ${field("debtorName", copy.fieldPayableByName, model.formValues.debtorName, {
+              className: "field-wide",
+              placeholder: ""
+            })}
             ${field("debtorStreet", copy.fieldPayableByStreet, model.formValues.debtorStreet, { placeholder: "" })}
             ${field("debtorNumber", copy.fieldPayableByNumber, model.formValues.debtorNumber, { placeholder: "" })}
             ${field("debtorPostcode", copy.fieldPayableByPostcode, model.formValues.debtorPostcode, { placeholder: "" })}
