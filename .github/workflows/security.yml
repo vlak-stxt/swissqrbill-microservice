@@ -61,9 +61,13 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - uses: aquasecurity/trivy-action@0.33.1
-        with:
-          scan-type: fs
-          format: table
-          ignore-unfixed: true
-          severity: CRITICAL,HIGH
+      - name: Run Trivy filesystem scan
+        run: >
+          docker run --rm
+          -v "${{ github.workspace }}:/workspace"
+          -w /workspace
+          aquasec/trivy:0.68.2
+          fs
+          --severity CRITICAL,HIGH
+          --ignore-unfixed
+          .
