@@ -195,6 +195,10 @@ small {
   position: absolute;
   opacity: 0;
   pointer-events: none;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  padding: 0;
 }
 
 .toggle-switch-ui {
@@ -243,7 +247,7 @@ small {
   font-weight: 700;
 }
 
-input,
+input:not([type="checkbox"]),
 textarea {
   width: 100%;
   border: 1px solid rgba(16, 24, 32, 0.12);
@@ -254,7 +258,7 @@ textarea {
   background: rgba(255, 255, 255, 0.78);
 }
 
-input:focus,
+input:not([type="checkbox"]):focus,
 textarea:focus {
   outline: 2px solid rgba(216, 93, 42, 0.25);
   border-color: rgba(216, 93, 42, 0.5);
