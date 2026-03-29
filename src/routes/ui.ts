@@ -62,7 +62,13 @@ function buildResetLink(language: UiLanguage): string {
 }
 
 function normalizeBaseUrl(value: string): string {
-  return value.replace(/\/+$/, "");
+  let normalized = value;
+
+  while (normalized.endsWith("/")) {
+    normalized = normalized.slice(0, -1);
+  }
+
+  return normalized;
 }
 
 function resolveForwardedValue(value: unknown): string | undefined {
