@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { parsePaymentInput, RequestValidationError } from "../src/validators/payment.js";
+import { getValidationIssues, parsePaymentInput, RequestValidationError } from "../src/validators/payment.js";
 
 const base = {
   city: "Zurich",
@@ -159,5 +159,48 @@ describe("payment validator", () => {
       expect(error).toBeInstanceOf(RequestValidationError);
       expect((error as RequestValidationError).issues.some((i) => i.field === "Betrag")).toBe(true);
     }
+  });
+
+  // QR reference is 27 numeric digits; all-zeros passes MOD10 check
+  const validQrrReference = "000000000000000000000000000";
+
+  // CH6631999000000000000: IID 31999 is in QR-IBAN range (30000-31999), checksum verified
+  const validQrIban = "CH6631999000000000000";
+
+  // RF18539007547034: valid ISO 11649 SCOR reference, checksum verified
+  const validScorReference = "RF18539007547034";
+
+  it("rejects a regular IBAN paired with a QRR reference", () => {
+    try {
+      parsePaymentInput({ ...base, reference: validQrrReference });
+      throw new Error("Expected parsePaymentInput to throw");
+    } catch (error) {
+      expect(error).toBeInstanceOf(RequestValidationError);
+      const messages = (error as RequestValidationError).issues.map((i) => i.message);
+      expect(messages.some((m) => m.includes("QR-IBAN"))).toBe(true);
+    }
+  });
+
+  it("rejects a QR-IBAN paired with a non-QRR reference", () => {
+    try {
+      parsePaymentInput({ ...base, iban: validQrIban, reference: validScorReference });
+      throw new Error("Expected parsePaymentInput to throw");
+    } catch (error) {
+      expect(error).toBeInstanceOf(RequestValidationError);
+      const messages = (error as RequestValidationError).issues.map((i) => i.message);
+      expect(messages.some((m) => m.includes("QR reference"))).toBe(true);
+    }
+  });
+
+  it("getValidationIssues returns a generic error for non-validation errors", () => {
+    const issues = getValidationIssues(new Error("unexpected"), "en");
+    expect(issues).toHaveLength(1);
+    expect(issues[0]).toMatchObject({ message: "Unable to process request." });
+  });
+
+  it("getValidationIssues returns a generic German error for non-validation errors", () => {
+    const issues = getValidationIssues(new Error("unexpected"), "de");
+    expect(issues).toHaveLength(1);
+    expect(issues[0]).toMatchObject({ message: "Anfrage konnte nicht verarbeitet werden." });
   });
 });
