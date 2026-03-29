@@ -50,6 +50,7 @@ interface HomePageModel {
   language: UiLanguage;
   links?: RenderedBillLinks;
   metadataNote?: string;
+  publicBaseUrl?: string;
   resetLink: string;
   switchLinks: Record<UiLanguage, string>;
   svgMarkup?: string;
@@ -183,7 +184,8 @@ export function renderHomePage(model: HomePageModel): string {
   const errors = model.errors ?? [];
   const hasResult = model.svgMarkup !== undefined;
   const copy = copyByLanguage[model.language];
-  const svgAbsoluteUrl = model.links ? new URL(model.links.embedSvgUrl, "https://qr.ua-in.ch").toString() : "";
+  const svgAbsoluteUrl =
+    model.links && model.publicBaseUrl ? new URL(model.links.embedSvgUrl, model.publicBaseUrl).toString() : "";
   const websiteEmbedCode = `<img src="${svgAbsoluteUrl}" alt="Swiss QR Bill" loading="lazy" />`;
 
   return `<!doctype html>

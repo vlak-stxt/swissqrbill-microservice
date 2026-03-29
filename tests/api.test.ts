@@ -67,4 +67,15 @@ describe("/api/qr", () => {
       success: false
     });
   });
+
+  it("serves public assets with cache headers instead of no-store", async () => {
+    const response = await app.inject({
+      method: "GET",
+      url: "/public/app.js"
+    });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.headers["cache-control"]).toContain("max-age");
+    expect(response.headers["cache-control"]).not.toContain("no-store");
+  });
 });
