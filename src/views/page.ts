@@ -284,7 +284,7 @@ export function renderHomePage(model: HomePageModel): string {
                 <div class="panel-head">
                   <div>
                     <h2>${escapeHtml(copy.headingPreview)}</h2>
-                    <p>${escapeHtml(copy.previewLead).replaceAll("`", "<code>").replace("</code>swissqrbill<code>", "swissqrbill").replaceAll("<code>", "<code>").replaceAll("</code>", "</code>")}</p>
+                    <p>${escapeHtml(copy.previewLead).replace(/`([^`]+)`/g, "<code>$1</code>")}</p>
                   </div>
                   <div class="actions">
                     <a class="button" href="${escapeHtml(model.links?.pdfUrl)}">${escapeHtml(copy.actionDownloadPdf)}</a>
