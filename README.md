@@ -1,5 +1,8 @@
 # swissqrbill-microservice
 
+[![CI](https://github.com/vlak-stxt/swissqrbill-microservice/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/vlak-stxt/swissqrbill-microservice/actions/workflows/ci.yml)
+[![Security](https://github.com/vlak-stxt/swissqrbill-microservice/actions/workflows/security.yml/badge.svg?branch=main)](https://github.com/vlak-stxt/swissqrbill-microservice/actions/workflows/security.yml)
+
 Self-hostable Swiss QR Bill microservice with HTTP API and HTML form, powered by [`schoero/swissqrbill`](https://github.com/schoero/swissqrbill).
 
 ## Demo instance
