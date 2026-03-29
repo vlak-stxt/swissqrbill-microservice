@@ -32,6 +32,7 @@ const summaryLabels: Record<
     amount: string;
     city: string;
     currency: string;
+    payableBy: string;
     message: string;
     payee: string;
     personalNote: string;
@@ -46,6 +47,7 @@ const summaryLabels: Record<
     address: "Adresse",
     amount: "Betrag",
     payee: "Begünstigter",
+    payableBy: "Zahlbar durch",
     city: "Ort",
     currency: "Währung",
     message: "Mitteilung",
@@ -63,6 +65,7 @@ const summaryLabels: Record<
     currency: "Currency",
     message: "Message",
     payee: "Payee",
+    payableBy: "Payable by",
     personalNote: "Personal note",
     reference: "Reference",
     summary: "Summary",
@@ -75,6 +78,26 @@ function appendLanguage(params: URLSearchParams, language: BillLanguage): URLSea
   const next = new URLSearchParams(params);
   next.set("lang", language === "DE" ? "de" : "en");
   return next;
+}
+
+function toDebtor(input: PaymentInput): Data["debtor"] | undefined {
+  if (
+    input.debtorName === undefined ||
+    input.debtorStreet === undefined ||
+    input.debtorPostcode === undefined ||
+    input.debtorCity === undefined
+  ) {
+    return undefined;
+  }
+
+  return {
+    address: input.debtorStreet,
+    buildingNumber: input.debtorNumber,
+    city: input.debtorCity,
+    country: input.debtorCountry ?? "CH",
+    name: input.debtorName,
+    zip: input.debtorPostcode
+  };
 }
 
 function toSwissQrData(input: PaymentInput): Data {
@@ -90,6 +113,7 @@ function toSwissQrData(input: PaymentInput): Data {
       zip: input.postcode
     },
     currency: input.currency,
+    debtor: toDebtor(input),
     message: input.message,
     reference: input.reference
   };
@@ -211,6 +235,20 @@ export function buildSummary(input: PaymentInput, language: BillLanguage = "EN")
 
   if (input.message !== undefined) {
     rows.push({ label: labels.message, value: input.message });
+  }
+
+  if (input.debtorName !== undefined && input.debtorStreet !== undefined && input.debtorPostcode !== undefined && input.debtorCity !== undefined) {
+    rows.push({
+      label: labels.payableBy,
+      value: [
+        input.debtorName,
+        [input.debtorStreet, input.debtorNumber].filter(Boolean).join(" "),
+        [input.debtorPostcode, input.debtorCity].filter(Boolean).join(" "),
+        input.debtorCountry ?? "CH"
+      ]
+        .filter(Boolean)
+        .join(", ")
+    });
   }
 
   if (input.address !== undefined) {

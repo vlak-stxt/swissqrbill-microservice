@@ -6,6 +6,12 @@ export interface PaymentInput {
   number?: string;
   postcode: string;
   city: string;
+  debtorName?: string;
+  debtorStreet?: string;
+  debtorNumber?: string;
+  debtorPostcode?: string;
+  debtorCity?: string;
+  debtorCountry?: string;
   iban: string;
   amount?: number;
   message?: string;

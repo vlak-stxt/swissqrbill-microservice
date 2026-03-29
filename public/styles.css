@@ -164,12 +164,91 @@ small {
   grid-column: 1 / -1;
 }
 
+.form-section {
+  grid-column: 1 / -1;
+  margin-top: 8px;
+  font-size: 0.98rem;
+  font-weight: 800;
+}
+
+.form-divider {
+  grid-column: 1 / -1;
+  height: 1px;
+  margin: 8px 0 4px;
+  background: rgba(16, 24, 32, 0.1);
+}
+
+.toggle-row {
+  grid-column: 1 / -1;
+  padding-top: 2px;
+}
+
+.toggle-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.toggle-switch input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  padding: 0;
+}
+
+.toggle-switch-ui {
+  display: inline-block;
+  position: relative;
+  width: 46px;
+  height: 28px;
+  border-radius: 999px;
+  background: rgba(16, 24, 32, 0.14);
+  transition: background 140ms ease;
+}
+
+.toggle-switch-ui::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(16, 24, 32, 0.18);
+  transition: transform 140ms ease;
+}
+
+.toggle-switch input:checked + .toggle-switch-ui {
+  background: var(--ink);
+}
+
+.toggle-switch input:checked + .toggle-switch-ui::after {
+  transform: translateX(18px);
+}
+
+.debtor-fields {
+  grid-column: 1 / -1;
+  display: none;
+  grid-template-columns: inherit;
+  gap: 14px;
+}
+
+.debtor-fields.is-visible {
+  display: grid;
+}
+
 .field span {
   font-size: 0.92rem;
   font-weight: 700;
 }
 
-input,
+input:not([type="checkbox"]),
 textarea {
   width: 100%;
   border: 1px solid rgba(16, 24, 32, 0.12);
@@ -180,7 +259,7 @@ textarea {
   background: rgba(255, 255, 255, 0.78);
 }
 
-input:focus,
+input:not([type="checkbox"]):focus,
 textarea:focus {
   outline: 2px solid rgba(216, 93, 42, 0.25);
   border-color: rgba(216, 93, 42, 0.5);

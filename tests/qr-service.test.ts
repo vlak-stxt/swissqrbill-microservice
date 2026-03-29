@@ -10,6 +10,7 @@ describe("qr bill service", () => {
     expect(svg).toContain("<svg");
     expect(svg).toContain("Payment part");
     expect(svg).toContain("Example Tools AG");
+    expect(svg).toContain("Example Customer GmbH");
   });
 
   it("renders German SVG output when requested", () => {

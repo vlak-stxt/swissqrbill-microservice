@@ -1,6 +1,6 @@
 import type { PaymentInput } from "../types/payment.js";
 
-const ROUTE_ONLY_FIELDS = new Set(["download", "format", "lang"]);
+const ROUTE_ONLY_FIELDS = new Set(["debtorEnabled", "download", "format", "lang"]);
 
 export function toSingleValue(value: unknown): unknown {
   if (Array.isArray(value)) {

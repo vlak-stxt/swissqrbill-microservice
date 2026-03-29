@@ -12,6 +12,8 @@ interface Copy {
   actionDownloadSvg: string;
   actionGenerateQr: string;
   actionResetForm: string;
+  actionTogglePayableBy: string;
+  sectionPayableBy: string;
   embedWebsiteLead: string;
   embedWebsiteTitle: string;
   eyebrow: string;
@@ -23,6 +25,12 @@ interface Copy {
   fieldIban: string;
   fieldMessage: string;
   fieldName: string;
+  fieldPayableByCity: string;
+  fieldPayableByCountry: string;
+  fieldPayableByName: string;
+  fieldPayableByNumber: string;
+  fieldPayableByPostcode: string;
+  fieldPayableByStreet: string;
   fieldNumber: string;
   fieldPersonalNote: string;
   fieldPostcode: string;
@@ -66,6 +74,8 @@ const copyByLanguage: Record<UiLanguage, Copy> = {
     actionDownloadSvg: "SVG herunterladen",
     actionGenerateQr: "QR generieren",
     actionResetForm: "Formular zurücksetzen",
+    actionTogglePayableBy: "Angaben zum Zahlenden hinzufügen",
+    sectionPayableBy: "Angaben zum Zahlenden",
     embedWebsiteLead: "Direkte Einbindung auf einer Website per externem SVG.",
     embedWebsiteTitle: "Einbettung auf Websites",
     eyebrow: "Open Source • Fastify • TypeScript",
@@ -77,6 +87,12 @@ const copyByLanguage: Record<UiLanguage, Copy> = {
     fieldIban: "IBAN",
     fieldMessage: "Mitteilung an Empfänger",
     fieldName: "Name des Zahlungsempfängers",
+    fieldPayableByCity: "Ort",
+    fieldPayableByCountry: "Land",
+    fieldPayableByName: "Name",
+    fieldPayableByNumber: "Nr.",
+    fieldPayableByPostcode: "PLZ",
+    fieldPayableByStreet: "Strasse",
     fieldNumber: "Nummer",
     fieldPersonalNote: "Persönliche Notiz",
     fieldPostcode: "PLZ",
@@ -105,6 +121,8 @@ const copyByLanguage: Record<UiLanguage, Copy> = {
     actionDownloadSvg: "Download SVG",
     actionGenerateQr: "Generate QR",
     actionResetForm: "Reset form",
+    actionTogglePayableBy: "Add payer details",
+    sectionPayableBy: "Payer details",
     embedWebsiteLead: "Direct website embed using the external SVG endpoint.",
     embedWebsiteTitle: "Website embed",
     eyebrow: "Open-source • Fastify • TypeScript",
@@ -116,6 +134,12 @@ const copyByLanguage: Record<UiLanguage, Copy> = {
     fieldIban: "IBAN",
     fieldMessage: "Message for payee",
     fieldName: "Payee Name",
+    fieldPayableByCity: "City",
+    fieldPayableByCountry: "Country",
+    fieldPayableByName: "Name",
+    fieldPayableByNumber: "No.",
+    fieldPayableByPostcode: "Postcode",
+    fieldPayableByStreet: "Street",
     fieldNumber: "Number",
     fieldPersonalNote: "Personal note",
     fieldPostcode: "Postcode",
@@ -143,6 +167,7 @@ function field(
   label: string,
   value: string | undefined,
   options?: {
+    className?: string;
     hint?: string;
     inputMode?: "decimal" | "numeric" | "text";
     min?: string;
@@ -152,9 +177,10 @@ function field(
   }
 ): string {
   const type = options?.type ?? "text";
+  const className = options?.className ? `field ${options.className}` : "field";
 
   return `
-    <label class="field">
+    <label class="${escapeHtml(className)}">
       <span>${escapeHtml(label)}</span>
       <input
         name="${escapeHtml(name)}"
@@ -180,10 +206,36 @@ function textArea(name: keyof PaymentInput, label: string, value: string | undef
   `;
 }
 
+function formSection(title: string): string {
+  return `<div class="form-section">${escapeHtml(title)}</div>`;
+}
+
+function formDivider(): string {
+  return `<div class="form-divider" aria-hidden="true"></div>`;
+}
+
 export function renderHomePage(model: HomePageModel): string {
   const errors = model.errors ?? [];
   const hasResult = model.svgMarkup !== undefined;
   const copy = copyByLanguage[model.language];
+  const hasDebtorValues =
+    model.formValues.debtorName !== undefined ||
+    model.formValues.debtorStreet !== undefined ||
+    model.formValues.debtorNumber !== undefined ||
+    model.formValues.debtorPostcode !== undefined ||
+    model.formValues.debtorCity !== undefined ||
+    model.formValues.debtorCountry !== undefined;
+  const hasDebtorErrors = errors.some((error) =>
+    [
+      copy.fieldPayableByName,
+      copy.fieldPayableByStreet,
+      copy.fieldPayableByNumber,
+      copy.fieldPayableByPostcode,
+      copy.fieldPayableByCity,
+      copy.fieldPayableByCountry
+    ].includes(error.field)
+  );
+  const debtorExpanded = hasDebtorValues || hasDebtorErrors;
   const svgAbsoluteUrl =
     model.links && model.publicBaseUrl ? new URL(model.links.embedSvgUrl, model.publicBaseUrl).toString() : "";
   const websiteEmbedCode = `<img src="${svgAbsoluteUrl}" alt="Swiss QR Bill" />`;
@@ -264,6 +316,28 @@ export function renderHomePage(model: HomePageModel): string {
           })}
           ${textArea("personalNote", copy.fieldPersonalNote, model.formValues.personalNote, copy.hintPersonalNote)}
           ${field("country", copy.fieldCountry, model.formValues.country ?? "CH")}
+          ${formDivider()}
+          <div class="toggle-row">
+            <label class="toggle-switch">
+              <input type="checkbox" name="debtorEnabled" value="1" data-debtor-toggle ${debtorExpanded ? "checked" : ""} />
+              <span class="toggle-switch-ui" aria-hidden="true"></span>
+              <span>${escapeHtml(copy.actionTogglePayableBy)}</span>
+            </label>
+          </div>
+          <div class="debtor-fields ${debtorExpanded ? "is-visible" : ""}" data-debtor-fields ${debtorExpanded ? "" : "hidden"}>
+            ${formSection(copy.sectionPayableBy)}
+            ${field("debtorName", copy.fieldPayableByName, model.formValues.debtorName, {
+              className: "field-wide",
+              placeholder: ""
+            })}
+            ${field("debtorStreet", copy.fieldPayableByStreet, model.formValues.debtorStreet, { placeholder: "" })}
+            ${field("debtorNumber", copy.fieldPayableByNumber, model.formValues.debtorNumber, { placeholder: "" })}
+            ${field("debtorPostcode", copy.fieldPayableByPostcode, model.formValues.debtorPostcode, { placeholder: "" })}
+            ${field("debtorCity", copy.fieldPayableByCity, model.formValues.debtorCity, { placeholder: "" })}
+            ${field("debtorCountry", copy.fieldPayableByCountry, model.formValues.debtorCountry ?? "CH", {
+              placeholder: "CH"
+            })}
+          </div>
 
           <div class="form-footer">
             <button class="button" type="submit">${escapeHtml(copy.actionGenerateQr)}</button>

@@ -32,6 +32,8 @@ services:
       [
         "tunnel",
         "--no-autoupdate",
+        "--protocol",
+        "http2",
         "run",
         "--token",
         "${TUNNEL_TOKEN}"

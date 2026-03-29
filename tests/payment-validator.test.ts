@@ -18,6 +18,25 @@ describe("payment validator", () => {
     expect(parsed.iban).toBe("CH5604835012345678009");
   });
 
+  it("accepts a complete payable-by block", () => {
+    const parsed = parsePaymentInput({
+      city: "Zurich",
+      debtorCity: "Adliswil",
+      debtorCountry: "CH",
+      debtorName: "Example Customer GmbH",
+      debtorNumber: "67",
+      debtorPostcode: "8134",
+      debtorStreet: "Customer Street",
+      iban: "CH5604835012345678009",
+      name: "Example Tools AG",
+      postcode: "8000",
+      street: "Example Street"
+    });
+
+    expect(parsed.debtorName).toBe("Example Customer GmbH");
+    expect(parsed.debtorCity).toBe("Adliswil");
+  });
+
   it("rejects an empty payee name", () => {
     expect(() => parsePaymentInput({ ...base, name: "" })).toThrow(RequestValidationError);
   });

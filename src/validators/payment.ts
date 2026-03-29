@@ -124,6 +124,12 @@ const paymentSchema = z
     number: optionalString(16),
     postcode: z.preprocess((value) => sanitizeString(value) ?? "", z.string().min(1, "Required field.").max(16)),
     city: requiredString(35),
+    debtorName: optionalString(70),
+    debtorStreet: optionalString(70),
+    debtorNumber: optionalString(16),
+    debtorPostcode: optionalString(16),
+    debtorCity: optionalString(35),
+    debtorCountry: z.preprocess((value) => sanitizeUppercaseString(value), z.string().length(2).optional()),
     iban: requiredIban,
     amount: z.preprocess(
       (value) => sanitizeAmount(value),
@@ -143,6 +149,48 @@ const paymentSchema = z
     reference: z.preprocess((value) => sanitizeReference(value), z.string().max(27).optional())
   })
   .superRefine((value, ctx) => {
+    const hasDebtor =
+      value.debtorName !== undefined ||
+      value.debtorStreet !== undefined ||
+      value.debtorNumber !== undefined ||
+      value.debtorPostcode !== undefined ||
+      value.debtorCity !== undefined ||
+      value.debtorCountry !== undefined;
+
+    if (hasDebtor) {
+      if (value.debtorName === undefined) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Required field.",
+          path: ["debtorName"]
+        });
+      }
+
+      if (value.debtorStreet === undefined) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Required field.",
+          path: ["debtorStreet"]
+        });
+      }
+
+      if (value.debtorPostcode === undefined) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Required field.",
+          path: ["debtorPostcode"]
+        });
+      }
+
+      if (value.debtorCity === undefined) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Required field.",
+          path: ["debtorCity"]
+        });
+      }
+    }
+
     if (value.amount !== undefined && value.amount.toFixed(2).length > 12) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
@@ -214,6 +262,12 @@ const fieldLabels: Record<ValidationLanguage, Record<string, string>> = {
     city: "Ort",
     country: "Land",
     currency: "Währung",
+    debtorCity: "Ort",
+    debtorCountry: "Land",
+    debtorName: "Name",
+    debtorNumber: "Nr.",
+    debtorPostcode: "PLZ",
+    debtorStreet: "Strasse",
     iban: "IBAN",
     input: "Eingabe",
     message: "Mitteilung",
@@ -230,6 +284,12 @@ const fieldLabels: Record<ValidationLanguage, Record<string, string>> = {
     city: "City",
     country: "Country",
     currency: "Currency",
+    debtorCity: "City",
+    debtorCountry: "Country",
+    debtorName: "Name",
+    debtorNumber: "No.",
+    debtorPostcode: "Postcode",
+    debtorStreet: "Street",
     iban: "IBAN",
     input: "Input",
     message: "Message",
