@@ -137,7 +137,7 @@ This repository ships with two Docker deployment variants:
 - [docker-compose.yml](/Users/vlak/swissqrbill-microservice/docker-compose.yml): localhost-only deployment on `127.0.0.1:3000`
 - [docker-compose.cloudflared.yml](/Users/vlak/swissqrbill-microservice/docker-compose.cloudflared.yml): dedicated Cloudflare Tunnel deployment
 
-See [DEPLOY.md](/Users/vlak/swissqrbill-microservice/DEPLOY.md) for the full `/opt/qr.ua-in` rollout flow.
+See [DEPLOY.md](/Users/vlak/swissqrbill-microservice/DEPLOY.md) for a sample rollout layout and deployment flow.
 
 ## API usage
 
