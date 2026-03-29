@@ -75,6 +75,7 @@ document.addEventListener("change", (event) => {
       return;
     }
 
+    fields.hidden = !target.checked;
     fields.classList.toggle("is-visible", target.checked);
   }
 });

@@ -110,7 +110,7 @@ const uiRoutes: FastifyPluginCallback = (app, _options, done) => {
     const publicBaseUrl = resolvePublicBaseUrl(request);
     const resetLink = buildResetLink(language);
     const switchLinks = buildLanguageLinks(query);
-    const assetVersion = process.env.ASSET_VERSION ?? process.env.npm_package_version ?? "dev";
+    const assetVersion = process.env.ASSET_VERSION ?? "20260329-payable-by-1";
 
     if (!hasAnyPaymentField(source)) {
       reply.type("text/html; charset=utf-8");

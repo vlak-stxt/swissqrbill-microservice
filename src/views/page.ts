@@ -311,7 +311,7 @@ export function renderHomePage(model: HomePageModel): string {
               <span>${escapeHtml(copy.actionTogglePayableBy)}</span>
             </label>
           </div>
-          <div class="debtor-fields ${debtorExpanded ? "is-visible" : ""}" data-debtor-fields>
+          <div class="debtor-fields ${debtorExpanded ? "is-visible" : ""}" data-debtor-fields ${debtorExpanded ? "" : "hidden"}>
             ${formSection(copy.sectionPayableBy)}
             ${field("debtorName", copy.fieldPayableByName, model.formValues.debtorName, { placeholder: "" })}
             ${field("debtorStreet", copy.fieldPayableByStreet, model.formValues.debtorStreet, { placeholder: "" })}
