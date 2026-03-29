@@ -77,7 +77,7 @@ That makes it a good fit for a small wrapper service with low standard-complianc
 
 Requirements:
 
-- Node.js 25 stable
+- Node.js 22 LTS
 - npm
 
 Install and start:
@@ -107,6 +107,7 @@ Example values are in [.env.example](/Users/vlak/swissqrbill-microservice/.env.e
 | `LOG_LEVEL` | `info` | Fastify logger level |
 | `RATE_LIMIT_MAX` | `60` | Max requests per window |
 | `RATE_LIMIT_WINDOW` | `1 minute` | Rate limit window |
+| `PUBLIC_BASE_URL` | empty | Optional canonical public base URL used for generated embed URLs |
 | `COMPOSE_PROJECT_NAME` | `qrbill` | Docker Compose project name |
 | `TUNNEL_TOKEN` | empty | Required only for dedicated Cloudflare Tunnel mode |
 
@@ -230,6 +231,26 @@ Covered scenarios:
 - successful SVG generation
 - successful PDF generation
 - integration tests for `GET /api/qr` and `POST /api/qr`
+- UI embed URLs derived from proxy headers or `PUBLIC_BASE_URL`
+- static assets served with cache headers
+
+## CI and security
+
+GitHub Actions cover:
+
+- `npm run lint`
+- `npm test`
+- `npm run build`
+- Docker image build validation
+- `npm audit --omit=dev`
+- CodeQL analysis for JavaScript/TypeScript
+- Trivy filesystem scan for high/critical findings
+
+Dependabot is configured for:
+
+- npm dependencies
+- Docker base images
+- GitHub Actions
 
 ## Health endpoint
 

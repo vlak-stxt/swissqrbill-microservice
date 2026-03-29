@@ -1,4 +1,4 @@
-import type { FastifyPluginCallback } from "fastify";
+import type { FastifyPluginCallback, FastifyRequest } from "fastify";
 
 import { buildMetadata, renderSvg, type BillLanguage } from "../services/qr-bill.js";
 import type { PaymentInput } from "../types/payment.js";
@@ -61,14 +61,50 @@ function buildResetLink(language: UiLanguage): string {
   return `/?lang=${language}`;
 }
 
+function normalizeBaseUrl(value: string): string {
+  return value.replace(/\/+$/, "");
+}
+
+function resolveForwardedValue(value: unknown): string | undefined {
+  const single = toSingleValue(value);
+
+  if (typeof single !== "string") {
+    return undefined;
+  }
+
+  const candidate = single
+    .split(",")[0]
+    ?.trim();
+
+  return candidate && candidate.length > 0 ? candidate : undefined;
+}
+
+function resolvePublicBaseUrl(request: FastifyRequest): string | undefined {
+  const configured = process.env.PUBLIC_BASE_URL?.trim();
+
+  if (configured) {
+    return normalizeBaseUrl(configured);
+  }
+
+  const protocol = resolveForwardedValue(request.headers["x-forwarded-proto"]) ?? request.protocol;
+  const host = resolveForwardedValue(request.headers["x-forwarded-host"] ?? request.headers.host);
+
+  if (!host) {
+    return undefined;
+  }
+
+  return normalizeBaseUrl(`${protocol}://${host}`);
+}
+
 const uiRoutes: FastifyPluginCallback = (app, _options, done) => {
   app.get("/", async (request, reply) => {
     const query = request.query as Record<string, unknown>;
     const source = extractPaymentSource(query);
     const language = resolveLanguage(query);
+    const publicBaseUrl = resolvePublicBaseUrl(request);
     const resetLink = buildResetLink(language);
     const switchLinks = buildLanguageLinks(query);
-    const assetVersion = process.env.ASSET_VERSION ?? "20260329-ui-3";
+    const assetVersion = process.env.ASSET_VERSION ?? process.env.npm_package_version ?? "dev";
 
     if (!hasAnyPaymentField(source)) {
       reply.type("text/html; charset=utf-8");
@@ -76,6 +112,7 @@ const uiRoutes: FastifyPluginCallback = (app, _options, done) => {
         assetVersion,
         formValues: {},
         language,
+        publicBaseUrl,
         resetLink,
         switchLinks
       });
@@ -99,6 +136,7 @@ const uiRoutes: FastifyPluginCallback = (app, _options, done) => {
         language,
         links: metadata.links,
         metadataNote,
+        publicBaseUrl,
         resetLink,
         switchLinks,
         summary: metadata.summary,
@@ -112,6 +150,7 @@ const uiRoutes: FastifyPluginCallback = (app, _options, done) => {
         errors: getValidationIssues(error, language),
         formValues: toFormValues(source),
         language,
+        publicBaseUrl,
         resetLink,
         switchLinks
       });

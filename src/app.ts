@@ -36,26 +36,16 @@ export function buildApp(options: AppOptions) {
     }
   });
 
-  app.addHook("onSend", async (request, reply, payload) => {
-    if (request.url.startsWith("/public/")) {
-      reply.header("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
-      reply.header("Pragma", "no-cache");
-      reply.header("Expires", "0");
-      reply.header("Surrogate-Control", "no-store");
-    }
-
-    return payload;
-  });
-
   app.register(formbody);
   app.register(rateLimit, {
     max: options.rateLimitMax,
     timeWindow: options.rateLimitWindow
   });
   app.register(fastifyStatic, {
-    cacheControl: false,
-    etag: false,
-    lastModified: false,
+    cacheControl: true,
+    etag: true,
+    lastModified: true,
+    maxAge: "1d",
     prefix: "/public/",
     root: path.join(currentDir, "..", "public")
   });

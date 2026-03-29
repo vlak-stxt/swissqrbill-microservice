@@ -1,12 +1,12 @@
 {
   "name": "swissqrbill-microservice",
   "version": "0.1.0",
-  "private": false,
+  "private": true,
   "description": "Self-hostable Swiss QR Bill microservice with HTTP API and HTML form, powered by schoero/swissqrbill.",
   "license": "MIT",
   "type": "module",
   "engines": {
-    "node": ">=25 <26"
+    "node": ">=22 <23"
   },
   "scripts": {
     "dev": "tsx watch src/server.ts",
