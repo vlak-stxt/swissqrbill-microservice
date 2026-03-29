@@ -63,7 +63,14 @@ document.addEventListener("change", (event) => {
   const target = event.target;
 
   if (target instanceof HTMLSelectElement && target.hasAttribute("data-lang-select")) {
-    window.location.href = target.value;
+    try {
+      const url = new URL(target.value, window.location.origin);
+      if (url.origin === window.location.origin) {
+        window.location.href = url.href;
+      }
+    } catch {
+      // invalid URL, ignore
+    }
     return;
   }
 
