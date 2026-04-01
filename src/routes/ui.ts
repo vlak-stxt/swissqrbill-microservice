@@ -17,7 +17,7 @@ function toFormValues(source: Record<string, unknown>): Partial<Record<keyof Pay
       values[key as keyof PaymentInput] = String(single);
     }
 
-    if (typeof single === "string") {
+    if (typeof single === "string" && single.trim().length > 0) {
       values[key as keyof PaymentInput] = single;
     }
   }

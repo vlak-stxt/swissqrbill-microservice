@@ -170,6 +170,7 @@ function field(
   value: string | undefined,
   options?: {
     className?: string;
+    disabled?: boolean;
     hint?: string;
     inputMode?: "decimal" | "numeric" | "text";
     min?: string;
@@ -192,17 +193,24 @@ function field(
         ${options?.inputMode ? `inputmode="${escapeHtml(options.inputMode)}"` : ""}
         ${options?.min ? `min="${escapeHtml(options.min)}"` : ""}
         ${options?.step ? `step="${escapeHtml(options.step)}"` : ""}
+        ${options?.disabled ? "disabled" : ""}
       />
       ${options?.hint ? `<small>${escapeHtml(options.hint)}</small>` : ""}
     </label>
   `;
 }
 
-function textArea(name: keyof PaymentInput, label: string, value: string | undefined, hint?: string): string {
+function textArea(
+  name: keyof PaymentInput,
+  label: string,
+  value: string | undefined,
+  hint?: string,
+  disabled?: boolean
+): string {
   return `
     <label class="field field-wide">
       <span>${escapeHtml(label)}</span>
-      <textarea name="${escapeHtml(name)}" rows="3">${escapeHtml(value)}</textarea>
+      <textarea name="${escapeHtml(name)}" rows="3" ${disabled ? "disabled" : ""}>${escapeHtml(value)}</textarea>
       ${hint ? `<small>${escapeHtml(hint)}</small>` : ""}
     </label>
   `;
@@ -225,8 +233,7 @@ export function renderHomePage(model: HomePageModel): string {
     model.formValues.debtorStreet !== undefined ||
     model.formValues.debtorNumber !== undefined ||
     model.formValues.debtorPostcode !== undefined ||
-    model.formValues.debtorCity !== undefined ||
-    model.formValues.debtorCountry !== undefined;
+    model.formValues.debtorCity !== undefined;
   const hasDebtorErrors = errors.some((error) =>
     [
       copy.fieldPayableByName,
@@ -238,6 +245,7 @@ export function renderHomePage(model: HomePageModel): string {
     ].includes(error.field)
   );
   const debtorExpanded = hasDebtorValues || hasDebtorErrors;
+  const debtorFieldsDisabled = !debtorExpanded;
   const svgAbsoluteUrl =
     model.links && model.publicBaseUrl ? new URL(model.links.embedSvgUrl, model.publicBaseUrl).toString() : "";
   const websiteEmbedCode = `<img src="${svgAbsoluteUrl}" alt="Swiss QR Bill" />`;
@@ -343,13 +351,27 @@ export function renderHomePage(model: HomePageModel): string {
             ${formSection(copy.sectionPayableBy)}
             ${field("debtorName", copy.fieldPayableByName, model.formValues.debtorName, {
               className: "field-wide",
+              disabled: debtorFieldsDisabled,
               placeholder: ""
             })}
-            ${field("debtorStreet", copy.fieldPayableByStreet, model.formValues.debtorStreet, { placeholder: "" })}
-            ${field("debtorNumber", copy.fieldPayableByNumber, model.formValues.debtorNumber, { placeholder: "" })}
-            ${field("debtorPostcode", copy.fieldPayableByPostcode, model.formValues.debtorPostcode, { placeholder: "" })}
-            ${field("debtorCity", copy.fieldPayableByCity, model.formValues.debtorCity, { placeholder: "" })}
+            ${field("debtorStreet", copy.fieldPayableByStreet, model.formValues.debtorStreet, {
+              disabled: debtorFieldsDisabled,
+              placeholder: ""
+            })}
+            ${field("debtorNumber", copy.fieldPayableByNumber, model.formValues.debtorNumber, {
+              disabled: debtorFieldsDisabled,
+              placeholder: ""
+            })}
+            ${field("debtorPostcode", copy.fieldPayableByPostcode, model.formValues.debtorPostcode, {
+              disabled: debtorFieldsDisabled,
+              placeholder: ""
+            })}
+            ${field("debtorCity", copy.fieldPayableByCity, model.formValues.debtorCity, {
+              disabled: debtorFieldsDisabled,
+              placeholder: ""
+            })}
             ${field("debtorCountry", copy.fieldPayableByCountry, model.formValues.debtorCountry ?? "CH", {
+              disabled: debtorFieldsDisabled,
               placeholder: "CH"
             })}
           </div>

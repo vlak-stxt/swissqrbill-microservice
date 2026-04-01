@@ -84,5 +84,8 @@ document.addEventListener("change", (event) => {
 
     fields.hidden = !target.checked;
     fields.classList.toggle("is-visible", target.checked);
+    for (const input of fields.querySelectorAll("input, textarea, select")) {
+      input.disabled = !target.checked;
+    }
   }
 });
