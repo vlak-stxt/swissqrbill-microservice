@@ -37,6 +37,16 @@ describe("payment validator", () => {
     expect(parsed.debtorCity).toBe("Adliswil");
   });
 
+  it("ignores debtorCountry when no other payer details are provided", () => {
+    const parsed = parsePaymentInput({ ...base, debtorCountry: "CH" });
+
+    expect(parsed.debtorCountry).toBeUndefined();
+    expect(parsed.debtorName).toBeUndefined();
+    expect(parsed.debtorStreet).toBeUndefined();
+    expect(parsed.debtorPostcode).toBeUndefined();
+    expect(parsed.debtorCity).toBeUndefined();
+  });
+
   it("rejects an empty payee name", () => {
     expect(() => parsePaymentInput({ ...base, name: "" })).toThrow(RequestValidationError);
   });

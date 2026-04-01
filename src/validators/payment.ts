@@ -154,8 +154,7 @@ const paymentSchema = z
       value.debtorStreet !== undefined ||
       value.debtorNumber !== undefined ||
       value.debtorPostcode !== undefined ||
-      value.debtorCity !== undefined ||
-      value.debtorCountry !== undefined;
+      value.debtorCity !== undefined;
 
     if (hasDebtor) {
       if (value.debtorName === undefined) {
@@ -243,6 +242,24 @@ const paymentSchema = z
       });
     }
   });
+
+function normalizeDebtorFields(input: PaymentInput): PaymentInput {
+  const hasDebtorCoreFields =
+    input.debtorName !== undefined ||
+    input.debtorStreet !== undefined ||
+    input.debtorNumber !== undefined ||
+    input.debtorPostcode !== undefined ||
+    input.debtorCity !== undefined;
+
+  if (hasDebtorCoreFields) {
+    return input;
+  }
+
+  return {
+    ...input,
+    debtorCountry: undefined
+  };
+}
 
 export class RequestValidationError extends Error {
   readonly issues: ValidationIssue[];
@@ -356,7 +373,7 @@ export function parsePaymentInput(input: Record<string, unknown>, language: Vali
     throw new RequestValidationError(result.error.issues.map((issue) => toValidationIssue(issue, language)));
   }
 
-  return result.data;
+  return normalizeDebtorFields(result.data);
 }
 
 export function getValidationIssues(error: unknown, language: ValidationLanguage = "en"): ValidationIssue[] {
