@@ -6,6 +6,7 @@ COPY package*.json ./
 RUN npm ci --ignore-scripts
 
 COPY . .
+RUN (git describe --tags --exact-match HEAD || git rev-parse --short HEAD || node -p "JSON.parse(require('node:fs').readFileSync('package.json', 'utf8')).version") > .app-version
 RUN npm run build
 
 FROM node:25.8.2-alpine AS runtime
@@ -13,14 +14,12 @@ FROM node:25.8.2-alpine AS runtime
 WORKDIR /app
 ENV NODE_ENV=production
 
-ARG GIT_TAG=""
-ENV ASSET_VERSION=$GIT_TAG
-
 COPY package*.json ./
 RUN npm ci --omit=dev --ignore-scripts
 
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/public ./public
+COPY --from=build /app/.app-version ./.app-version
 COPY --from=build /app/LICENSE ./LICENSE
 COPY --from=build /app/README.md ./README.md
 

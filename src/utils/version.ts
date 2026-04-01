@@ -6,8 +6,16 @@ export type AppVersion =
   | { kind: "commit"; sha: string };
 
 export function resolveAppVersion(): AppVersion | undefined {
-  const override = process.env.ASSET_VERSION?.trim();
-  if (override) return { kind: "tag", ref: override };
+  try {
+    const bundled = readFileSync(new URL("../../.app-version", import.meta.url), "utf8").trim();
+    if (bundled) {
+      return /^\d+\.\d+\.\d+$/.test(bundled)
+        ? { kind: "tag", ref: bundled }
+        : { kind: "commit", sha: bundled };
+    }
+  } catch {
+    // build did not bundle version metadata
+  }
 
   try {
     const tag = execSync("git describe --tags --exact-match HEAD", {
