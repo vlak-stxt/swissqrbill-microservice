@@ -1,6 +1,7 @@
 import type { PaymentInput, ValidationIssue } from "../types/payment.js";
 import { escapeHtml } from "../utils/html.js";
 import type { RenderedBillLinks } from "../services/qr-bill.js";
+import type { AppVersion } from "../utils/version.js";
 
 export type UiLanguage = "de" | "en";
 
@@ -52,7 +53,8 @@ interface Copy {
 }
 
 interface HomePageModel {
-  assetVersion: string;
+  appVersion: AppVersion | undefined;
+  swissqrbillVersion: string | undefined;
   errors?: ValidationIssue[];
   formValues: Partial<Record<keyof PaymentInput, string>>;
   language: UiLanguage;
@@ -239,6 +241,19 @@ export function renderHomePage(model: HomePageModel): string {
   const svgAbsoluteUrl =
     model.links && model.publicBaseUrl ? new URL(model.links.embedSvgUrl, model.publicBaseUrl).toString() : "";
   const websiteEmbedCode = `<img src="${svgAbsoluteUrl}" alt="Swiss QR Bill" />`;
+  const assetCacheKey =
+    model.appVersion === undefined ? "" :
+    model.appVersion.kind === "tag" ? model.appVersion.ref : model.appVersion.sha;
+  const appVersionLink =
+    model.appVersion === undefined
+      ? `<a class="site-footer-link" href="https://github.com/vlak-stxt/swissqrbill-microservice" target="_blank" rel="noopener">swissqrbill-microservice</a>`
+      : model.appVersion.kind === "tag"
+        ? `<a class="site-footer-link" href="https://github.com/vlak-stxt/swissqrbill-microservice/releases/tag/${escapeHtml(model.appVersion.ref)}" target="_blank" rel="noopener">swissqrbill-microservice ${escapeHtml(model.appVersion.ref)}</a>`
+        : `<a class="site-footer-link" href="https://github.com/vlak-stxt/swissqrbill-microservice/commit/${escapeHtml(model.appVersion.sha)}" target="_blank" rel="noopener">swissqrbill-microservice ${escapeHtml(model.appVersion.sha)}</a>`;
+  const swissqrbillLink =
+    model.swissqrbillVersion === undefined
+      ? `<a class="site-footer-link" href="https://github.com/schoero/swissqrbill" target="_blank" rel="noopener">swissqrbill</a>`
+      : `<a class="site-footer-link" href="https://github.com/schoero/swissqrbill/releases/tag/v${escapeHtml(model.swissqrbillVersion)}" target="_blank" rel="noopener">swissqrbill v${escapeHtml(model.swissqrbillVersion)}</a>`;
 
   return `<!doctype html>
 <html lang="${escapeHtml(model.language)}">
@@ -246,10 +261,10 @@ export function renderHomePage(model: HomePageModel): string {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Swiss QR Bill Microservice</title>
-    <link rel="icon" href="/public/favicon.ico?v=${escapeHtml(model.assetVersion)}" sizes="any" />
-    <link rel="icon" type="image/png" href="/public/qrbill-favicon.png?v=${escapeHtml(model.assetVersion)}" />
-    <link rel="stylesheet" href="/public/styles.css?v=${escapeHtml(model.assetVersion)}" />
-    <script defer src="/public/app.js?v=${escapeHtml(model.assetVersion)}"></script>
+    <link rel="icon" href="/public/favicon.ico?v=${escapeHtml(assetCacheKey)}" sizes="any" />
+    <link rel="icon" type="image/png" href="/public/qrbill-favicon.png?v=${escapeHtml(assetCacheKey)}" />
+    <link rel="stylesheet" href="/public/styles.css?v=${escapeHtml(assetCacheKey)}" />
+    <script defer src="/public/app.js?v=${escapeHtml(assetCacheKey)}"></script>
   </head>
   <body>
     <main class="shell">
@@ -410,6 +425,11 @@ export function renderHomePage(model: HomePageModel): string {
           : ""
       }
     </main>
+    <footer class="site-footer">
+      ${appVersionLink}
+      <span class="site-footer-sep">·</span>
+      ${swissqrbillLink}
+    </footer>
   </body>
 </html>`;
 }

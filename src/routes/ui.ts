@@ -3,6 +3,7 @@ import type { FastifyPluginCallback, FastifyRequest } from "fastify";
 import { buildMetadata, renderSvg, type BillLanguage } from "../services/qr-bill.js";
 import type { PaymentInput } from "../types/payment.js";
 import { extractPaymentSource, hasAnyPaymentField, toSingleValue } from "../utils/http.js";
+import { resolveAppVersion, resolveSwissqrbillVersion } from "../utils/version.js";
 import { renderHomePage, type UiLanguage } from "../views/page.js";
 import { getValidationIssues, parsePaymentInput } from "../validators/payment.js";
 
@@ -110,12 +111,14 @@ const uiRoutes: FastifyPluginCallback = (app, _options, done) => {
     const publicBaseUrl = resolvePublicBaseUrl(request);
     const resetLink = buildResetLink(language);
     const switchLinks = buildLanguageLinks(query);
-    const assetVersion = process.env.ASSET_VERSION ?? process.env.npm_package_version ?? "dev";
+    const appVersion = resolveAppVersion();
+    const swissqrbillVersion = resolveSwissqrbillVersion();
 
     if (!hasAnyPaymentField(source)) {
       reply.type("text/html; charset=utf-8");
       return renderHomePage({
-        assetVersion,
+        appVersion,
+        swissqrbillVersion,
         formValues: {},
         language,
         publicBaseUrl,
@@ -137,7 +140,8 @@ const uiRoutes: FastifyPluginCallback = (app, _options, done) => {
 
       reply.type("text/html; charset=utf-8");
       return renderHomePage({
-        assetVersion,
+        appVersion,
+        swissqrbillVersion,
         formValues: toFormValues(source),
         language,
         links: metadata.links,
@@ -152,7 +156,8 @@ const uiRoutes: FastifyPluginCallback = (app, _options, done) => {
       request.log.info({ err: error }, "UI validation failed");
       reply.type("text/html; charset=utf-8");
       return renderHomePage({
-        assetVersion,
+        appVersion,
+        swissqrbillVersion,
         errors: getValidationIssues(error, language),
         formValues: toFormValues(source),
         language,

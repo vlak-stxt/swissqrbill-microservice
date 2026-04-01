@@ -13,6 +13,9 @@ FROM node:25.8.2-alpine AS runtime
 WORKDIR /app
 ENV NODE_ENV=production
 
+ARG GIT_TAG=""
+ENV ASSET_VERSION=$GIT_TAG
+
 COPY package*.json ./
 RUN npm ci --omit=dev --ignore-scripts
 
