@@ -7,7 +7,7 @@ Self-hostable Swiss QR Bill microservice with HTTP API and HTML form, powered by
 
 ## Demo instance
 
-You can try a live instance at [qr.ua-in.ch](https://qr.ua-in.ch/).
+You can try a live instance at [qr.ua-in.ch](https://qr.ua-in.ch/). It usually tracks `main` and the latest release tag.
 
 This public deployment is provided for demonstration purposes only. It should not be used for production integrations because continuous availability is not guaranteed.
 
@@ -51,6 +51,7 @@ That makes it a good fit for a small wrapper service with low standard-complianc
 - SVG output
 - PDF output
 - EN/DE UI and bill rendering
+- optional payer / payable-by section in UI and API
 - website embed snippet on the result page
 - rate limiting
 - strict TypeScript build
@@ -75,6 +76,12 @@ That makes it a good fit for a small wrapper service with low standard-complianc
 | `personalNote` | optional | UI / metadata-only field |
 | `currency` | optional | Defaults to `CHF`, supports `CHF` and `EUR` |
 | `country` | optional | Defaults to `CH` |
+| `debtorName` | optional | Payer / payable-by name |
+| `debtorStreet` | optional | Payer street |
+| `debtorNumber` | optional | Payer building number |
+| `debtorPostcode` | optional | Payer postal code |
+| `debtorCity` | optional | Payer city |
+| `debtorCountry` | optional | Defaults to `CH` when payer details are present |
 
 ## Validation rules
 
@@ -83,6 +90,7 @@ That makes it a good fit for a small wrapper service with low standard-complianc
 - `amount` must be numeric and non-negative
 - field lengths are capped to stay within Swiss QR Bill layout limits
 - QR-IBAN requires a QR reference
+- if any payer field is provided, `debtorName`, `debtorStreet`, `debtorPostcode`, and `debtorCity` become required
 
 ## Local run
 
@@ -169,6 +177,12 @@ Example JSON metadata response:
 curl "http://localhost:3000/api/qr?name=Example%20Tools%20AG&street=Example%20Street&number=12A&postcode=8000&city=Zurich&iban=CH5604835012345678009&amount=149.95&format=json"
 ```
 
+Example with payer details:
+
+```bash
+curl "http://localhost:3000/api/qr?name=Example%20Tools%20AG&street=Example%20Street&number=12A&postcode=8000&city=Zurich&iban=CH5604835012345678009&amount=149.95&message=Invoice%2010024&debtorName=Example%20Customer%20GmbH&debtorStreet=Customer%20Street&debtorNumber=7&debtorPostcode=8134&debtorCity=Adliswil&debtorCountry=CH&format=svg"
+```
+
 ### POST `/api/qr`
 
 ```bash
@@ -183,7 +197,13 @@ curl -X POST "http://localhost:3000/api/qr?format=pdf" \
     "iban": "CH5604835012345678009",
     "amount": 149.95,
     "message": "Invoice 10024",
-    "personalNote": "Demo payload"
+    "personalNote": "Demo payload",
+    "debtorName": "Example Customer GmbH",
+    "debtorStreet": "Customer Street",
+    "debtorNumber": "7",
+    "debtorPostcode": "8134",
+    "debtorCity": "Adliswil",
+    "debtorCountry": "CH"
   }' \
   --output swiss-qr-bill.pdf
 ```
@@ -206,6 +226,7 @@ If `format` is omitted, the service defaults to JSON unless the `Accept` header 
 
 - Open `/`
 - fill in the form
+- optionally enable the payer details toggle and fill the payable-by address
 - click `Generate QR`
 - review the SVG preview and summary
 - use `Download PDF`, `Download SVG`, or `Copy API Link`
