@@ -1,4 +1,4 @@
-FROM node:25.8.2-alpine AS build
+FROM node:25.9.0-alpine AS build
 
 WORKDIR /app
 
@@ -9,7 +9,7 @@ COPY . .
 RUN (git describe --tags --exact-match HEAD || git rev-parse --short HEAD || node -p "JSON.parse(require('node:fs').readFileSync('package.json', 'utf8')).version") > .app-version
 RUN npm run build
 
-FROM node:25.8.2-alpine AS runtime
+FROM node:25.9.0-alpine AS runtime
 
 WORKDIR /app
 ENV NODE_ENV=production
