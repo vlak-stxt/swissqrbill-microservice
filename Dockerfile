@@ -5,6 +5,8 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci --ignore-scripts
 
+RUN apk add --no-cache git
+
 COPY . .
 RUN (git describe --tags --exact-match HEAD || git rev-parse --short HEAD || node -p "JSON.parse(require('node:fs').readFileSync('package.json', 'utf8')).version") > .app-version
 RUN npm run build
