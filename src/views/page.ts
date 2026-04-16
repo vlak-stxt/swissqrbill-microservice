@@ -457,6 +457,10 @@ export function renderHomePage(model: HomePageModel): string {
           : ""
       }
     </main>
+    <p class="seo-lead">${model.language === "de"
+      ? "QR-Rechnung konforme Zahlscheine sofort erstellen. Nutze das Webformular oder integriere direkt per HTTP API zur Ausgabe als SVG und PDF. Kostenloser, quelloffener Microservice für Schweizer Unternehmen und Entwickler."
+      : "Create QR-Rechnung compliant invoices instantly. Use the web form or integrate via the stateless HTTP API to generate SVG and PDF output. Free, open-source, self-hostable microservice built for Swiss businesses and developers."
+    }</p>
     <footer class="site-footer">
       ${appVersionLink}
       <span class="site-footer-sep">·</span>
