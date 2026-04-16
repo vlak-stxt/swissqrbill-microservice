@@ -8,6 +8,7 @@ import fastifyStatic from "@fastify/static";
 
 import apiRoutes from "./routes/api.js";
 import healthRoutes from "./routes/health.js";
+import seoRoutes from "./routes/seo.js";
 import uiRoutes from "./routes/ui.js";
 
 export interface AppOptions {
@@ -51,6 +52,7 @@ export function buildApp(options: AppOptions) {
   });
 
   app.register(healthRoutes);
+  app.register(seoRoutes);
   app.register(uiRoutes);
   app.register(apiRoutes);
 

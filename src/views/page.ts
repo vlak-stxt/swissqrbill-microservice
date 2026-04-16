@@ -263,12 +263,22 @@ export function renderHomePage(model: HomePageModel): string {
       ? `<a class="site-footer-link" href="https://github.com/schoero/swissqrbill" target="_blank" rel="noopener">swissqrbill</a>`
       : `<a class="site-footer-link" href="https://github.com/schoero/swissqrbill/releases/tag/v${escapeHtml(model.swissqrbillVersion)}" target="_blank" rel="noopener">swissqrbill v${escapeHtml(model.swissqrbillVersion)}</a>`;
 
+  const seoTitle = process.env.SEO_TITLE?.trim() || "Swiss QR Bill Microservice";
+  const seoDescription = process.env.SEO_DESCRIPTION?.trim();
+  const canonicalUrl = model.publicBaseUrl ?? undefined;
+
   return `<!doctype html>
 <html lang="${escapeHtml(model.language)}">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Swiss QR Bill Microservice</title>
+    <title>${escapeHtml(seoTitle)}</title>
+    ${seoDescription ? `<meta name="description" content="${escapeHtml(seoDescription)}" />` : ""}
+    ${canonicalUrl ? `<link rel="canonical" href="${escapeHtml(canonicalUrl)}" />` : ""}
+    ${canonicalUrl ? `<meta property="og:url" content="${escapeHtml(canonicalUrl)}" />` : ""}
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="${escapeHtml(seoTitle)}" />
+    ${seoDescription ? `<meta property="og:description" content="${escapeHtml(seoDescription)}" />` : ""}
     <link rel="icon" href="/public/favicon.ico?v=${escapeHtml(assetCacheKey)}" sizes="any" />
     <link rel="icon" type="image/png" href="/public/qrbill-favicon.png?v=${escapeHtml(assetCacheKey)}" />
     <link rel="stylesheet" href="/public/styles.css?v=${escapeHtml(assetCacheKey)}" />
