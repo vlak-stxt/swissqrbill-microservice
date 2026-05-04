@@ -35,7 +35,7 @@
     "fastify": "^5.8.5",
     "pdfkit": "0.18.0",
     "swissqrbill": "4.3.0",
-    "zod": "4.3.6"
+    "zod": "4.4.2"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
