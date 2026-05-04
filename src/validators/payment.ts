@@ -139,12 +139,12 @@ const paymentSchema = z
     address: optionalString(70),
     personalNote: optionalString(140),
     currency: z.preprocess(
-      (value) => sanitizeUppercaseString(value) ?? "CHF",
-      z.enum(["CHF", "EUR"])
+      (value) => sanitizeUppercaseString(value),
+      z.enum(["CHF", "EUR"]).optional().default("CHF")
     ),
     country: z.preprocess(
-      (value) => sanitizeUppercaseString(value) ?? "CH",
-      z.string().length(2, "Country must use a 2-letter ISO code.")
+      (value) => sanitizeUppercaseString(value),
+      z.string().length(2, "Country must use a 2-letter ISO code.").optional().default("CH")
     ),
     reference: z.preprocess((value) => sanitizeReference(value), z.string().max(27).optional())
   })
