@@ -9,8 +9,8 @@ describe("qr bill service", () => {
 
     expect(svg).toContain("<svg");
     expect(svg).toContain("Payment part");
-    expect(svg).toContain("Example Tools AG");
-    expect(svg).toContain("Example Customer GmbH");
+    expect(svg).toContain("SwissQRBill");
+    expect(svg).toContain("Peter Muster");
   });
 
   it("renders German SVG output when requested", () => {
@@ -36,7 +36,7 @@ describe("qr bill service", () => {
   it("PDF contains expected payee name", async () => {
     const pdf = await renderPdf(validPaymentInput);
     // PDFs store strings in plain text for simple content
-    expect(pdf.toString("latin1")).toContain("Example Tools AG");
+    expect(pdf.toString("latin1")).toContain("SwissQRBill");
   });
 
   it("builds links with correct path prefixes", () => {
