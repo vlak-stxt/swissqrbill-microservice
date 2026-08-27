@@ -13,7 +13,7 @@ This public deployment is provided for demonstration purposes only. It should no
 
 Example prefilled bill:
 
-[Open example](https://qr.ua-in.ch/?lang=de&name=Sample+GmbH&iban=CH93+0076+2011+6238+5295+7&street=Bahnhofstrasse&number=1&postcode=8001&city=Zurich&amount=519.67&currency=CHF&message=Order+1234567+Customer+12345&country=CH)
+[Open example](https://qr.ua-in.ch/?lang=de&name=SwissQRBill&iban=CH44+3199+9123+0008+8901+2&street=Musterstrasse&number=7&postcode=1234&city=Musterstadt&country=CH&amount=1994.75&currency=CHF&reference=21+00000+00003+13947+14300+09017&debtorName=Peter+Muster&debtorStreet=Musterstrasse&debtorNumber=1&debtorPostcode=1234&debtorCity=Musterstadt&debtorCountry=CH)
 
 <p>
   <img src="./QR-BILL-example-screenshot.png" alt="Swiss QR Bill example" width="100%" />
@@ -162,25 +162,25 @@ See [DEPLOY.md](/Users/vlak/swissqrbill-microservice/DEPLOY.md) for a sample rol
 Example SVG request:
 
 ```bash
-curl "http://localhost:3000/api/qr?name=Example%20Tools%20AG&street=Example%20Street&number=12A&postcode=8000&city=Zurich&iban=CH5604835012345678009&amount=149.95&message=Invoice%2010024&personalNote=Demo%20payload&lang=de&format=svg"
+curl "http://localhost:3000/api/qr?name=SwissQRBill&street=Musterstrasse&number=7&postcode=1234&city=Musterstadt&iban=CH4431999123000889012&amount=1994.75&reference=21%2000000%2000003%2013947%2014300%2009017&debtorName=Peter%20Muster&debtorStreet=Musterstrasse&debtorNumber=1&debtorPostcode=1234&debtorCity=Musterstadt&lang=de&format=svg"
 ```
 
 Example PDF download:
 
 ```bash
-curl -L "http://localhost:3000/api/qr?name=Example%20Tools%20AG&street=Example%20Street&number=12A&postcode=8000&city=Zurich&iban=CH5604835012345678009&amount=149.95&format=pdf&download=1" --output swiss-qr-bill.pdf
+curl -L "http://localhost:3000/api/qr?name=SwissQRBill&street=Musterstrasse&number=7&postcode=1234&city=Musterstadt&iban=CH4431999123000889012&amount=1994.75&reference=21%2000000%2000003%2013947%2014300%2009017&format=pdf&download=1" --output swiss-qr-bill.pdf
 ```
 
 Example JSON metadata response:
 
 ```bash
-curl "http://localhost:3000/api/qr?name=Example%20Tools%20AG&street=Example%20Street&number=12A&postcode=8000&city=Zurich&iban=CH5604835012345678009&amount=149.95&format=json"
+curl "http://localhost:3000/api/qr?name=SwissQRBill&street=Musterstrasse&number=7&postcode=1234&city=Musterstadt&iban=CH4431999123000889012&amount=1994.75&reference=21%2000000%2000003%2013947%2014300%2009017&format=json"
 ```
 
 Example with payer details:
 
 ```bash
-curl "http://localhost:3000/api/qr?name=Example%20Tools%20AG&street=Example%20Street&number=12A&postcode=8000&city=Zurich&iban=CH5604835012345678009&amount=149.95&message=Invoice%2010024&debtorName=Example%20Customer%20GmbH&debtorStreet=Customer%20Street&debtorNumber=7&debtorPostcode=8134&debtorCity=Adliswil&debtorCountry=CH&format=svg"
+curl "http://localhost:3000/api/qr?name=SwissQRBill&street=Musterstrasse&number=7&postcode=1234&city=Musterstadt&iban=CH4431999123000889012&amount=1994.75&reference=21%2000000%2000003%2013947%2014300%2009017&debtorName=Peter%20Muster&debtorStreet=Musterstrasse&debtorNumber=1&debtorPostcode=1234&debtorCity=Musterstadt&debtorCountry=CH&format=svg"
 ```
 
 ### POST `/api/qr`
@@ -189,20 +189,19 @@ curl "http://localhost:3000/api/qr?name=Example%20Tools%20AG&street=Example%20St
 curl -X POST "http://localhost:3000/api/qr?format=pdf" \
   -H "Content-Type: application/json" \
   -d '{
-    "name": "Example Tools AG",
-    "street": "Example Street",
-    "number": "12A",
-    "postcode": "8000",
-    "city": "Zurich",
-    "iban": "CH5604835012345678009",
-    "amount": 149.95,
-    "message": "Invoice 10024",
-    "personalNote": "Demo payload",
-    "debtorName": "Example Customer GmbH",
-    "debtorStreet": "Customer Street",
-    "debtorNumber": "7",
-    "debtorPostcode": "8134",
-    "debtorCity": "Adliswil",
+    "name": "SwissQRBill",
+    "street": "Musterstrasse",
+    "number": "7",
+    "postcode": "1234",
+    "city": "Musterstadt",
+    "iban": "CH4431999123000889012",
+    "amount": 1994.75,
+    "reference": "21 00000 00003 13947 14300 09017",
+    "debtorName": "Peter Muster",
+    "debtorStreet": "Musterstrasse",
+    "debtorNumber": "1",
+    "debtorPostcode": "1234",
+    "debtorCity": "Musterstadt",
     "debtorCountry": "CH"
   }' \
   --output swiss-qr-bill.pdf
