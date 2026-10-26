@@ -12,6 +12,7 @@ interface Copy {
   actionDownloadPdf: string;
   actionDownloadSvg: string;
   actionGenerateQr: string;
+  actionFillExample: string;
   actionResetForm: string;
   actionTogglePayableBy: string;
   sectionPayableBy: string;
@@ -75,6 +76,7 @@ const copyByLanguage: Record<UiLanguage, Copy> = {
     actionDownloadPdf: "PDF herunterladen",
     actionDownloadSvg: "SVG herunterladen",
     actionGenerateQr: "QR generieren",
+    actionFillExample: "Beispiel ausfüllen",
     actionResetForm: "Formular zurücksetzen",
     actionTogglePayableBy: "Angaben zum Zahlenden hinzufügen",
     sectionPayableBy: "Angaben zum Zahlenden",
@@ -122,6 +124,7 @@ const copyByLanguage: Record<UiLanguage, Copy> = {
     actionDownloadPdf: "Download PDF",
     actionDownloadSvg: "Download SVG",
     actionGenerateQr: "Generate QR",
+    actionFillExample: "Fill example",
     actionResetForm: "Reset form",
     actionTogglePayableBy: "Add payer details",
     sectionPayableBy: "Payer details",
@@ -162,6 +165,31 @@ const copyByLanguage: Record<UiLanguage, Copy> = {
     uiLead: "Submit the form or prefill the page via query parameters.",
     validationFailed: "Validation failed"
   }
+};
+
+const exampleBaseValues: Partial<Record<keyof PaymentInput, string>> = {
+  address: "Postfach 123",
+  amount: "1994.75",
+  city: "Musterstadt",
+  country: "CH",
+  currency: "CHF",
+  debtorCity: "Musterstadt",
+  debtorCountry: "CH",
+  debtorName: "Peter Muster",
+  debtorNumber: "1",
+  debtorPostcode: "1234",
+  debtorStreet: "Musterstrasse",
+  iban: "CH44 3199 9123 0008 8901 2",
+  name: "SwissQRBill",
+  number: "7",
+  postcode: "1234",
+  reference: "21 00000 00003 13947 14300 09017",
+  street: "Musterstrasse"
+};
+
+const exampleValuesByLanguage: Record<UiLanguage, Partial<Record<keyof PaymentInput, string>>> = {
+  de: { ...exampleBaseValues, message: "Bestellung vom 15.06.2020", personalNote: "Demo-Rechnung" },
+  en: { ...exampleBaseValues, message: "Order from 15.06.2020", personalNote: "Demo invoice" }
 };
 
 function field(
@@ -307,6 +335,7 @@ export function renderHomePage(model: HomePageModel): string {
             <p>${escapeHtml(copy.uiLead)}</p>
           </div>
           <div class="actions">
+            <button class="button button-teal" type="button" data-fill-example="${escapeHtml(JSON.stringify(exampleValuesByLanguage[model.language]))}">${escapeHtml(copy.actionFillExample)}</button>
             <a class="button button-ghost" href="${escapeHtml(model.resetLink)}">${escapeHtml(copy.actionResetForm)}</a>
           </div>
         </div>

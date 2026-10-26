@@ -89,3 +89,35 @@ document.addEventListener("change", (event) => {
     }
   }
 });
+
+document.addEventListener("click", (event) => {
+  const button = event.target instanceof HTMLElement ? event.target.closest("[data-fill-example]") : null;
+  if (!(button instanceof HTMLElement)) {
+    return;
+  }
+
+  const form = document.querySelector("form.form-grid");
+  if (!(form instanceof HTMLFormElement)) {
+    return;
+  }
+
+  let values;
+  try {
+    values = JSON.parse(button.dataset.fillExample ?? "{}");
+  } catch {
+    return;
+  }
+
+  const toggle = form.querySelector("[data-debtor-toggle]");
+  if (toggle instanceof HTMLInputElement && !toggle.checked) {
+    toggle.checked = true;
+    toggle.dispatchEvent(new Event("change", { bubbles: true }));
+  }
+
+  for (const [name, value] of Object.entries(values)) {
+    const input = form.elements.namedItem(name);
+    if (input instanceof HTMLInputElement || input instanceof HTMLTextAreaElement) {
+      input.value = String(value);
+    }
+  }
+});

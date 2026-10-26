@@ -22,6 +22,7 @@
   --panel-border: rgba(16, 24, 32, 0.08);
   --accent: #d85d2a;
   --accent-soft: #ffe2d4;
+  --teal: #0f8b8d;
   --shadow: 0 24px 60px rgba(16, 24, 32, 0.12);
   --radius: 22px;
 }
@@ -297,6 +298,11 @@ button.button:hover {
 .button-ghost {
   background: var(--accent-soft);
   color: var(--ink);
+}
+
+.button.button-teal {
+  background: var(--teal);
+  color: #fff;
 }
 
 .results {

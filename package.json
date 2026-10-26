@@ -29,24 +29,24 @@
     "svg"
   ],
   "dependencies": {
-    "@fastify/formbody": "9.0.0",
-    "@fastify/rate-limit": "11.2.0",
-    "@fastify/static": "10.1.3",
-    "fastify": "^5.12.1",
-    "pdfkit": "0.20.1",
-    "swissqrbill": "4.4.1",
-    "zod": "4.4.3"
+    "@fastify/formbody": "9.0.1",
+    "@fastify/rate-limit": "11.2.1",
+    "@fastify/static": "10.1.7",
+    "fastify": "^5.12.7",
+    "pdfkit": "0.20.2",
+    "swissqrbill": "4.4.3",
+    "zod": "4.6.7"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
-    "@types/node": "26.0.0",
-    "@types/pdfkit": "0.17.6",
-    "@vitest/coverage-v8": "4.1.11",
-    "eslint": "10.5.0",
-    "globals": "17.11.0",
-    "tsx": "4.22.4",
+    "@types/node": "26.6.5",
+    "@types/pdfkit": "0.17.7",
+    "@vitest/coverage-v8": "5.0.5",
+    "eslint": "10.13.0",
+    "globals": "17.13.0",
+    "tsx": "4.23.15",
     "typescript": "6.0.3",
-    "typescript-eslint": "8.68.0",
-    "vitest": "4.1.11"
+    "typescript-eslint": "8.72.1",
+    "vitest": "5.0.5"
   }
 }

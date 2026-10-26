@@ -29,6 +29,24 @@ describe("UI form", () => {
     }
   });
 
+  it("renders a localized fill example button with example values", async () => {
+    const app = buildApp({ logLevel: "silent", rateLimitMax: 100, rateLimitWindow: "1 minute" });
+    await app.ready();
+
+    try {
+      const en = await app.inject({ method: "GET", url: "/?lang=en" });
+      expect(en.body).toContain(">Fill example</button>");
+      expect(en.body).toContain("data-fill-example=");
+      expect(en.body).toContain("Order from 15.06.2020");
+
+      const de = await app.inject({ method: "GET", url: "/?lang=de" });
+      expect(de.body).toContain(">Beispiel ausfüllen</button>");
+      expect(de.body).toContain("Bestellung vom 15.06.2020");
+    } finally {
+      await app.close();
+    }
+  });
+
   it("renders validation errors when invalid payment data is submitted", async () => {
     const app = buildApp({ logLevel: "silent", rateLimitMax: 100, rateLimitWindow: "1 minute" });
     await app.ready();
